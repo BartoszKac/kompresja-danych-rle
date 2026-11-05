@@ -1,0 +1,36 @@
+name: kompresja-rle
+
+services:
+  app:
+    build:
+      context: .
+      target: gui
+    init: true
+    ports:
+      - "127.0.0.1:6080:6080"
+    volumes:
+      - ./data:/data
+
+  samples:
+    profiles: [tools]
+    build:
+      context: .
+      target: samples
+    volumes:
+      - ./data:/data
+
+  benchmark:
+    profiles: [tools]
+    build:
+      context: .
+      target: runtime
+    command: python -m rle_compressor benchmark
+    volumes:
+      - ./data:/data
+
+  tests:
+    profiles: [tools]
+    build:
+      context: .
+      target: runtime
+    command: python -m unittest discover --start-directory tests --top-level-directory .

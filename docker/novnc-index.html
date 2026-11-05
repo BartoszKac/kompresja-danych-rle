@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kompresja danych RLE</title>
+  <style>
+    html, body, #screen { height: 100%; margin: 0; background: #fff; overflow: hidden; }
+    #connecting {
+      position: fixed; inset: 0; display: grid; place-items: center;
+      font: 16px system-ui, sans-serif; color: #667085;
+    }
+    #connecting[hidden] { display: none; }
+  </style>
+</head>
+<body>
+  <div id="screen"></div>
+  <div id="connecting">Łączenie z programem…</div>
+  <script type="module">
+    import RFB from "./core/rfb.js";
+
+    const RECONNECT_DELAY_MS = 1000;
+    const screen = document.getElementById("screen");
+    const connecting = document.getElementById("connecting");
+
+    function connect() {
+      const session = new RFB(screen, `ws://${location.host}/websockify`);
+      session.background = "#ffffff";
+      session.resizeSession = true; // Ekran programu dopasowuje się do karty przeglądarki.
+      session.addEventListener("connect", () => { connecting.hidden = true; });
+      session.addEventListener("disconnect", () => {
+        connecting.hidden = false;
+        setTimeout(connect, RECONNECT_DELAY_MS);
+      });
+    }
+
+    connect();
+  </script>
+</body>
+</html>

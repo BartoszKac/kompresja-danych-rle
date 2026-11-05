@@ -1,0 +1,6 @@
+*
+!rle_compressor
+!scripts
+!tests
+!docker
+**/__pycache__
